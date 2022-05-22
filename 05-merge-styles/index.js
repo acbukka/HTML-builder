@@ -8,7 +8,7 @@ const thisPath = path.join(__dirname);
 // создадим нашу функцию 
 async function bundleStyles() {
   let stylesArr = [];
-  // await fsPromises.writeFile(`${thisPath}/project-dist/bundle.css`, stylesArr.join(''), () => { });
+  await fsPromises.writeFile(`${thisPath}/project-dist/bundle.css`, '', () => { });
   fs.readdir(stylesPath, { withFileTypes: true }, (err, files) => {
     if (err) throw err;
     files.forEach((file) => {
@@ -32,3 +32,5 @@ async function bundleStyles() {
   });
 }
 bundleStyles();
+
+// надо удалять файл перед всем а не перезаписывать
