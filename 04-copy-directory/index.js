@@ -1,3 +1,5 @@
+//!!! P.S если возникают ошибки с работой fs.rm, значит версия ноды слишком старая
+
 const fs = require('fs');
 const path = require('path');
 const fsPromises = require('fs').promises;
@@ -30,3 +32,4 @@ async function copyDir() {
 }
 copyDir();
 // TODO добавить коммы
+// Дописать про fsPromises.rm (в 6-ом тоже)

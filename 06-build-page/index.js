@@ -1,3 +1,5 @@
+//!!! P.S если возникают ошибки с работой fs.rm, значит версия ноды слишком старая
+
 const fs = require('fs');
 const path = require('path');
 const fsPromises = require('fs').promises;
@@ -45,6 +47,7 @@ async function buildPage() {
 // создадим нашу функцию 
 async function bundleStyles() {
   let stylesArr = [];
+  await fsPromises.writeFile(`${thisPath}/project-dist/style.css`, '', () => { });
   fs.readdir(stylesPath, { withFileTypes: true }, (err, files) => {
     if (err) throw err;
     files.forEach((file) => {
