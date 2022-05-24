@@ -16,7 +16,7 @@ fs.readdir(path.join(__dirname, 'secret-folder'), { withFileTypes: true }, (err,
     // используем stat для получения размера файла
     fs.stat(thisPath, (err, stats) => {
       // получим разбер файла в kb
-      const sizeInKb = `${stats.size / 1000}kb`;
+      const sizeInKb = `${(stats.size / 1024).toFixed(1)} kb`;
       // запушим все полученные ранее данные в массив
       arrInfo.push(fileName, ext, sizeInKb);
       const result = arrInfo.join(' - ');
