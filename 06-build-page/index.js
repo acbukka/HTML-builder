@@ -46,7 +46,7 @@ async function buildPage() {
 // создадим нашу функцию 
 async function bundleStyles() {
   let stylesArr = [];
-  await fsPromises.writeFile(`${thisPath}/project-dist/style.css`, '', () => { });
+  // fsPromises.writeFile(`${thisPath}/project-dist/style.css`, '', () => { });
   fs.readdir(stylesPath, { withFileTypes: true }, (err, files) => {
     if (err) throw err;
     files.forEach((file) => {
