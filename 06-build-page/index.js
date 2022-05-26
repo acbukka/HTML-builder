@@ -37,7 +37,7 @@ async function buildPage() {
     // 2 этап (если не получится пихай в if)
     bundleStyles();
     // 3 этап
-    copyDir();
+    copyDir(path.join(__dirname, 'assets'), path.join(`${__dirname}/project-dist`, 'assets'));
   }
   template();
 }
@@ -72,28 +72,61 @@ async function bundleStyles() {
 }
 
 // используем скрипт из четвертого задания для копирования содержимого папки
-async function copyDir() {
+
+async function copyDir(src, dest) {
+  // нужно если папка существует - ее удалить и потом создать и потом пройтись, если существует 
+  let isFolderExist;
   // введем переменные для наших папок
-  const thisPath = path.join(__dirname, 'assets');
-  const newPath = path.join(`${__dirname}/project-dist`, 'assets');
-  // Затем копируем каждый файл из source папки в project-dist
-  await fsPromises.mkdir(newPath, { recursive: true });
-  fs.readdir(thisPath, { withFileTypes: true }, (err, files) => {
-    if (err) throw err;
-    files.forEach((dir) => {
-      if (dir.isDirectory()) {
-        fsPromises.mkdir(`${newPath}/${dir.name}`, { recursive: true }, () => { });
-      }
-      fs.readdir(`${thisPath}/${dir.name}`, { withFileTypes: true }, (err, files) => {
-        if (err) throw err;
-        files.forEach((file) => {
-          fsPromises.copyFile(`${thisPath}/${dir.name}/${file.name}`, `${newPath}/${dir.name}/${file.name}`);
-        });
+  await fsPromises.access(dest)
+    .then(() => isFolderExist = true)
+    .catch(() => isFolderExist = false);
+  // 
+  if (isFolderExist) {
+    await fsPromises.rm(dest, { recursive: true });
+    copyDir(src, dest);
+  } else {
+    await fsPromises.mkdir(dest, { recursive: true });
+    fs.readdir(src, { withFileTypes: true }, (err, files) => {
+      if (err) throw err;
+      files.forEach((dir) => {
+        if (dir.isDirectory()) {
+          fs.mkdir(`${dest}/${dir.name}`, { recursive: true }, () => {
+            if (err) throw err;
+          });
+          copyDir(`${src}/${dir.name}`, `${dest}/${dir.name}`);
+        } else {
+          fsPromises.copyFile(`${src}/${dir.name}`, `${dest}/${dir.name}`);
+        }
       });
     });
-  });
+  }
 }
-
 
 buildPage();
 // TODO добавить коммы
+
+
+
+// PREVIOUS copyDir FUNC
+
+// async function copyDir() {
+//   // введем переменные для наших папок
+//   const thisPath = path.join(__dirname, 'assets');
+//   const newPath = path.join(`${__dirname}/project-dist`, 'assets');
+//   // Затем копируем каждый файл из source папки в project-dist
+//   await fsPromises.mkdir(newPath, { recursive: true });
+//   fs.readdir(thisPath, { withFileTypes: true }, (err, files) => {
+//     if (err) throw err;
+//     files.forEach((dir) => {
+//       if (dir.isDirectory()) {
+//         fsPromises.mkdir(`${newPath}/${dir.name}`, { recursive: true }, () => { });
+//       }
+//       fs.readdir(`${thisPath}/${dir.name}`, { withFileTypes: true }, (err, files) => {
+//         if (err) throw err;
+//         files.forEach((file) => {
+//           fsPromises.copyFile(`${thisPath}/${dir.name}/${file.name}`, `${newPath}/${dir.name}/${file.name}`);
+//         });
+//       });
+//     });
+//   });
+// }
